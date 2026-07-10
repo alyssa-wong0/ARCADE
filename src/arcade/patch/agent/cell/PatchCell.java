@@ -431,8 +431,9 @@ public abstract class PatchCell implements Cell {
     /**
      * Selects best location for a cell to be added or move into.
      *
-     * <p>Each free location is scored based on glucose availability and distance from the center of
-     * the simulation.
+     * <p>Each free location is scored based on glucose availability, distance from the center of
+     * the simulation, and (if present) local ECM density, which penalizes locations with high
+     * stromal density.
      *
      * @param sim the simulation instance
      * @param random the random number generator
