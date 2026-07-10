@@ -12,6 +12,7 @@ import arcade.core.agent.cell.CellState;
 import arcade.core.agent.module.Module;
 import arcade.core.agent.process.Process;
 import arcade.core.agent.process.ProcessDomain;
+import arcade.core.env.lattice.Lattice;
 import arcade.core.env.location.Location;
 import arcade.core.sim.Simulation;
 import arcade.core.util.GrabBag;
@@ -441,6 +442,11 @@ public abstract class PatchCell implements Cell {
         Bag locs = findFreeLocations(sim);
         double maxGlucose =
                 sim.getLattice("GLUCOSE").getParameters().getDouble("generator/CONCENTRATION");
+        // Optional ECM density layer. Falls back to no penalty if the layer
+        // isn't declared in this simulation's setup, so existing setups
+        // without ECM_DENSITY are unaffected.
+        Lattice ecmLattice = sim.getLattice("ECM_DENSITY");
+        boolean hasEcm = ecmLattice != null;
         int currZ = location.getPlanarIndex();
         double currR = location.getPlanarDistance();
         int[] inds = new int[3];
@@ -456,7 +462,12 @@ public abstract class PatchCell implements Cell {
                 double normConc = sim.getLattice("GLUCOSE").getAverageValue(location) / maxGlucose;
                 double gluc = (accuracy * normConc + (1 - accuracy) * random.nextDouble());
                 double dist = ((currR - loc.getPlanarDistance()) + 1) / 2.0;
-                double score = affinity * dist + (1 - affinity) * gluc;
+                double ecmPenalty = 0.0;
+                if (hasEcm) {
+                    double localEcm = ecmLattice.getAverageValue(loc);
+                    ecmPenalty = Math.min(1.0, localEcm);
+                }
+                double score = (affinity * dist + (1 - affinity) * gluc) * (1 - ecmPenalty);
 
                 // Determine index for z position of location.
                 // 0: same z, 1: z + 1, 2: z - 1
