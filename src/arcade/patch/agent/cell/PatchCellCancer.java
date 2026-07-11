@@ -3,6 +3,7 @@ package arcade.patch.agent.cell;
 import sim.engine.SimState;
 import ec.util.MersenneTwisterFast;
 import arcade.core.agent.cell.CellState;
+import arcade.core.env.lattice.Lattice;
 import arcade.core.env.location.Location;
 import arcade.core.sim.Simulation;
 import arcade.core.util.GrabBag;
@@ -20,6 +21,8 @@ import static arcade.patch.util.PatchEnums.State;
  * </ul>
  */
 public class PatchCellCancer extends PatchCellTissue {
+    /** Rate at which local ECM density increases per tick near cancer cells. */
+    private static final double ECM_GROWTH_RATE = 0.001;
     /**
      * Creates a cancer {@code PatchCell} agent.
      *
@@ -54,6 +57,15 @@ public class PatchCellCancer extends PatchCellTissue {
         if (state == State.QUIESCENT) {
             checkNeighborhood(simstate, this);
         }
+
+        // Optionally grow local ECM density over time, modeling stromal
+        // deposition around the tumor. No-op if ECM_DENSITY isn't declared.
+        Simulation sim = (Simulation) simstate;
+        Lattice ecmLattice = sim.getLattice("ECM_DENSITY");
+        if (ecmLattice != null) {
+            ecmLattice.incrementValue(location, ECM_GROWTH_RATE);
+        }
+
         super.step(simstate);
     }
 
