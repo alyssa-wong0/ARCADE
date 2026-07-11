@@ -3,6 +3,7 @@ package arcade.patch.agent.cell;
 import sim.engine.SimState;
 import ec.util.MersenneTwisterFast;
 import arcade.core.agent.cell.CellState;
+import arcade.core.env.lattice.Lattice;
 import arcade.core.env.location.Location;
 import arcade.core.sim.Simulation;
 import arcade.core.util.GrabBag;
@@ -13,7 +14,17 @@ import arcade.patch.util.PatchEnums.State;
 
 /** Extension of {@link PatchCellCART} for CD8 CART-cells with selected module versions. */
 public class PatchCellCARTCD8 extends PatchCellCART {
+    /** Rate at which local ECM density decreases per tick if this cell is armored. */
+    private static final double ECM_DEGRADE_RATE = 0.002;
 
+    /**
+     * Whether this cell secretes ECM-degrading enzymes.
+     *
+     * <p>TODO: currently hardcoded to false; should be wired to a proper
+     * per-population parameter (e.g. "ARMORED") once that plumbing is in
+     * place, rather than left as a fixed default.
+     */
+    private boolean armored = false;
     /**
      * Creates a T cell {@code PatchCellCARTCD8} agent. *
      *
@@ -76,6 +87,15 @@ public class PatchCellCARTCD8 extends PatchCellCART {
         }
         if (super.lastActiveTicker / MINUTES_IN_DAY >= 7) {
             super.activated = false;
+        }
+
+        // Optionally degrade local ECM density over time if this cell is
+        // armored. No-op if ECM_DENSITY isn't declared or cell isn't armored.
+        if (armored) {
+            Lattice ecmLattice = sim.getLattice("ECM_DENSITY");
+            if (ecmLattice != null) {
+                ecmLattice.incrementValue(location, -ECM_DEGRADE_RATE);
+            }
         }
 
         super.processes.get(Domain.METABOLISM).step(simstate.random, sim);
