@@ -20,11 +20,11 @@ public class PatchCellCARTCD8 extends PatchCellCART {
     /**
      * Whether this cell secretes ECM-degrading enzymes.
      *
-     * <p>TODO: currently hardcoded to false; should be wired to a proper
-     * per-population parameter (e.g. "ARMORED") once that plumbing is in
-     * place, rather than left as a fixed default.
+     * <p>Set from the "ARMORED" parameter (read as a double, since no
+     * boolean parameter type exists elsewhere in this codebase). Any value
+     * greater than 0 is treated as true.
      */
-    private boolean armored = false;
+    private boolean armored;
     /**
      * Creates a T cell {@code PatchCellCARTCD8} agent. *
      *
@@ -48,6 +48,7 @@ public class PatchCellCARTCD8 extends PatchCellCART {
     public PatchCellCARTCD8(
             PatchCellContainer container, Location location, Parameters parameters, GrabBag links) {
         super(container, location, parameters, links);
+        armored = parameters.getDouble("ARMORED") > 0;
     }
 
     @Override

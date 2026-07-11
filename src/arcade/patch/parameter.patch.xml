@@ -39,6 +39,7 @@
     <population id="CAR_ALPHA" value="3" description="fitting factor in CAR binding function" />
     <population id="CAR_BETA" value="0.01" description="fitting factor in CAR binding function" />
     <population id="SELF_RECEPTOR_AFFINITY" value="7.8E-6" unit="M" descrption="affinity of self receptor for self" />
+    <population id="ARMORED" value="0" description="whether cell secretes ECM-degrading enzymes (nonzero = true)" />
     <population id="SELF_ALPHA" value="3" description="fitting factor in PD1 binding function" />
     <population id="SELF_BETA" value="0.02" description="fitting factor in PD1 binding function" />
     <population id="CONTACT_FRAC" value="0.2" description="fraction of cell surface contacting a bound cell during a binding event" />
