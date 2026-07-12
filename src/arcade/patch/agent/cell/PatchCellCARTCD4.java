@@ -3,6 +3,7 @@ package arcade.patch.agent.cell;
 import sim.engine.SimState;
 import ec.util.MersenneTwisterFast;
 import arcade.core.agent.cell.CellState;
+import arcade.core.env.lattice.Lattice;
 import arcade.core.env.location.Location;
 import arcade.core.sim.Simulation;
 import arcade.core.util.GrabBag;
@@ -13,6 +14,17 @@ import arcade.patch.util.PatchEnums.State;
 
 /** Extension of {@link PatchCellCART} for CD4 CART-cells with selected module versions. */
 public class PatchCellCARTCD4 extends PatchCellCART {
+    /** Rate at which local ECM density decreases per tick if this cell is armored. */
+    private static final double ECM_DEGRADE_RATE = 0.002;
+
+    /**
+     * Whether this cell secretes ECM-degrading enzymes.
+     *
+     * <p>Set from the "ARMORED" parameter (read as a double, since no
+     * boolean parameter type exists elsewhere in this codebase). Any value
+     * greater than 0 is treated as true.
+     */
+    private boolean armored;
 
     /**
      * Creates a T cell {@code PatchCellCARTCD4} agent.
@@ -37,6 +49,7 @@ public class PatchCellCARTCD4 extends PatchCellCART {
     public PatchCellCARTCD4(
             PatchCellContainer container, Location location, Parameters parameters, GrabBag links) {
         super(container, location, parameters, links);
+        armored = parameters.getDouble("ARMORED") > 0;
     }
 
     @Override
@@ -59,6 +72,15 @@ public class PatchCellCARTCD4 extends PatchCellCART {
     public void step(SimState simstate) {
         Simulation sim = (Simulation) simstate;
 
+        // Optionally degrade local ECM density over time if this cell is
+        // armored. No-op if ECM_DENSITY isn't declared or cell isn't armored.
+        if (armored) {
+            Lattice ecmLattice = sim.getLattice("ECM_DENSITY");
+            if (ecmLattice != null) {
+                ecmLattice.incrementValue(location, -ECM_DEGRADE_RATE);
+            }
+        }
+        
         super.age++;
 
         if (state != State.APOPTOTIC && age > apoptosisAge) {
