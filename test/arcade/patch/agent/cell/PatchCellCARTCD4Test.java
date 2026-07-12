@@ -13,6 +13,7 @@ import arcade.patch.agent.module.PatchModule;
 import arcade.patch.agent.process.PatchProcessInflammation;
 import arcade.patch.agent.process.PatchProcessMetabolism;
 import arcade.patch.agent.process.PatchProcessSignaling;
+import arcade.core.env.lattice.Lattice;
 import arcade.patch.env.location.PatchLocation;
 import arcade.patch.sim.PatchSimulation;
 import arcade.patch.util.PatchEnums.Domain;
@@ -73,7 +74,7 @@ public class PatchCellCARTCD4Test {
     }
 
     @Test
-    public void step_called_increasesAge() {
+    public void step_whenArmoredAndEcmDensityDeclared_decreasesEcmDensity() {
         cellMock = spy(new PatchCellCARTCD4(container, locationMock, parametersMock));
         cellMock.processes.put(Domain.METABOLISM, mock(PatchProcessMetabolism.class));
         cellMock.processes.put(Domain.SIGNALING, mock(PatchProcessSignaling.class));
@@ -93,11 +94,16 @@ public class PatchCellCARTCD4Test {
                         any(Simulation.class),
                         any(PatchLocation.class),
                         any(MersenneTwisterFast.class));
-        int initialAge = cellMock.getAge();
+
+        Lattice ecmLatticeMock = mock(Lattice.class);
+        doReturn(ecmLatticeMock).when(simMock).getLattice("ECM_DENSITY");
 
         cellMock.step(simMock);
 
-        assertEquals(initialAge + 1, cellMock.getAge());
+        // ECM_DEGRADE_RATE is 0.002 in PatchCellCARTCD4; "ARMORED" defaults
+        // to 1.0 (true) in this test file's global parameter stub, so the
+        // armored cell should decrement local ECM density by that amount.
+        verify(ecmLatticeMock, times(1)).incrementValue(locationMock, -0.002);
     }
 
     @Test
