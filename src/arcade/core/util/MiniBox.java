@@ -9,6 +9,7 @@ import arcade.core.util.distributions.NormalDistribution;
 import arcade.core.util.distributions.NormalFractionalDistribution;
 import arcade.core.util.distributions.NormalTruncatedDistribution;
 import arcade.core.util.distributions.UniformDistribution;
+import arcade.core.util.distributions.ZeroInflatedNormalDistribution;
 
 /**
  * Container that maps a key to a value.
@@ -216,3 +217,4 @@ public class MiniBox {
         return s.toString();
     }
 }
+
