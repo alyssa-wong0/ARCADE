@@ -41,6 +41,7 @@
     <population id="SELF_RECEPTOR_AFFINITY" value="7.8E-6" unit="M" descrption="affinity of self receptor for self" />
     <population id="SELF_ALPHA" value="3" description="fitting factor in PD1 binding function" />
     <population id="SELF_BETA" value="0.02" description="fitting factor in PD1 binding function" />
+    <population id="IL2_SECRETION_RATE" value="1" />
     <population id="CONTACT_FRAC" value="0.2" description="fraction of cell surface contacting a bound cell during a binding event" />
     <population id="BOUND_TIME" value="360" description="6 hours" />
 

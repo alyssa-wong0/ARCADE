@@ -1,0 +1,33 @@
+<set prefix="IL2_TEST">
+    <series name="TEST"
+            start="0"
+            end="0"
+            radius="2"
+            depth="1"
+            ticks="10"
+            interval="10">
+
+        <patch />
+
+        <layers>
+            <layer id="IL2">
+                <layer.parameter id="INITIAL_CONCENTRATION" value="100" />
+            </layer>
+
+            <layer id="GLUCOSE">
+                <layer.parameter id="INITIAL_CONCENTRATION" value="100" />
+            </layer>
+
+            <layer id="OXYGEN">
+                <layer.parameter id="INITIAL_CONCENTRATION" value="100" />
+            </layer>
+        </layers>
+
+        <populations>
+            <population id="IL2_PRODUCER" class="cart_il2" init="10">
+                <population.parameter id="IL2_SECRETION_RATE" value="1" />
+            </population>
+        </populations>
+
+    </series>
+</set>
