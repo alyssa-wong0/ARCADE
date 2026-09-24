@@ -12,3 +12,5 @@ docs/javadoc
 working/
 .DS_Store
 MANIFEST.MF
+
+ecm test/output/
