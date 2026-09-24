@@ -101,6 +101,8 @@
 
     <!-- default parameters for layers -->
     <layer id="INITIAL_CONCENTRATION" value="0" units="(variable)" description="initial layer concentration" />
+    <layer id="CORE_CONCENTRATION" value="0" units="(variable)" description="ECM core concentration" />
+    <layer id="CORE_RADIUS" value="0" units="um" description="ECM core radius" />
 
     <!-- diffuser operation parameters -->
     <layer.operation operation="diffuser" id="DIFFUSIVITY" value="1.0" units="um^2/s" description="diffusivity of molecule" />

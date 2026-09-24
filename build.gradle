@@ -116,6 +116,7 @@ jar {
 task copyJar(type: Copy) {
     from jar
     into project.projectDir
+    doNotTrackState("copyJar copies the built JAR into the project root")
     doLast {
         println "\nBuild the Docker image using:"
         println "\ndocker build --build-arg VERSION=${gitVersion().substring(1)} -t arcade:${gitVersion().substring(1)} ."

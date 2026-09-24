@@ -23,6 +23,7 @@ import static arcade.patch.util.PatchEnums.State;
 public class PatchCellCancer extends PatchCellTissue {
     /** Rate at which local ECM density increases per tick near cancer cells. */
     private static final double ECM_GROWTH_RATE = 0.001;
+
     /**
      * Creates a cancer {@code PatchCell} agent.
      *

@@ -20,11 +20,11 @@ public class PatchCellCARTCD8 extends PatchCellCART {
     /**
      * Whether this cell secretes ECM-degrading enzymes.
      *
-     * <p>Set from the "ARMORED" parameter (read as a double, since no
-     * boolean parameter type exists elsewhere in this codebase). Any value
-     * greater than 0 is treated as true.
+     * <p>Set from the "ARMORED" parameter (read as a double, since no boolean parameter type exists
+     * elsewhere in this codebase). Any value greater than 0 is treated as true.
      */
     private boolean armored;
+
     /**
      * Creates a T cell {@code PatchCellCARTCD8} agent. *
      *

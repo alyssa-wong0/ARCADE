@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import sim.engine.Schedule;
 import sim.engine.Steppable;
 import ec.util.MersenneTwisterFast;
+import arcade.core.env.lattice.Lattice;
 import arcade.core.sim.Simulation;
 import arcade.core.util.MiniBox;
 import arcade.core.util.Parameters;
@@ -13,7 +14,6 @@ import arcade.patch.agent.module.PatchModule;
 import arcade.patch.agent.process.PatchProcessInflammation;
 import arcade.patch.agent.process.PatchProcessMetabolism;
 import arcade.patch.agent.process.PatchProcessSignaling;
-import arcade.core.env.lattice.Lattice;
 import arcade.patch.env.location.PatchLocation;
 import arcade.patch.sim.PatchSimulation;
 import arcade.patch.util.PatchEnums.Domain;
@@ -116,7 +116,7 @@ public class PatchCellCARTCD8Test {
         sim.random = random;
         cell.setState(State.UNDEFINED);
     }
-    
+
     @Test
     public void step_whenArmoredAndEcmDensityDeclared_decreasesEcmDensity()
             throws NoSuchFieldException, IllegalAccessException {

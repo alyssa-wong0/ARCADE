@@ -1,0 +1,43 @@
+<set prefix="ECM_TEST_">
+    <series name="TEST" start="0" end="0" radius="14" depth="1" margin="0" ticks="200" interval="1">
+
+        <patch/>
+
+        <populations>
+            <population id="CANCER" class="cancer" init="100"/>
+
+            <population id="CART-CD4" class="cart_cd4" init="50">
+                <population.process id="METABOLISM" version="CART"/>
+                <population.process id="SIGNALING" version="RANDOM"/>
+                <population.process id="INFLAMMATION" version="CD4"/>
+            </population>
+
+            <population id="CART-CD8" class="cart_cd8" init="50">
+                <population.process id="METABOLISM" version="CART"/>
+                <population.process id="SIGNALING" version="RANDOM"/>
+                <population.process id="INFLAMMATION" version="CD8"/>
+            </population>
+        </populations>
+
+        <layers>
+            <layer id="GLUCOSE">
+                <layer.parameter id="INITIAL_CONCENTRATION" value="100"/>
+            </layer>
+
+            <layer id="OXYGEN">
+                <layer.parameter id="INITIAL_CONCENTRATION" value="100"/>
+            </layer>
+
+            <layer id="IL-2">
+                <layer.parameter id="INITIAL_CONCENTRATION" value="100"/>
+            </layer>
+
+            <layer id="ECM_DENSITY">
+                <layer.parameter id="INITIAL_CONCENTRATION" value="0.1"/>
+                <layer.parameter id="CORE_CONCENTRATION" value="0.5"/>
+                <layer.parameter id="CORE_RADIUS" value="10"/>
+            </layer>        
+        </layers>
+
+    </series>
+</set>
