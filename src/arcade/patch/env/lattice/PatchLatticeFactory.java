@@ -54,6 +54,37 @@ public abstract class PatchLatticeFactory implements LatticeFactory {
             double initialValue = layer.getDouble("INITIAL_CONCENTRATION");
             lattice.setField(initialValue);
 
+            // Initialize a spatial ECM field with a dense tumor core.
+            if (key.equals("ECM_DENSITY")) {
+                double coreValue = layer.getDouble("CORE_CONCENTRATION");
+                double coreRadius = layer.getDouble("CORE_RADIUS");
+
+                int centerX = length / 2;
+                int centerY = width / 2;
+
+                double[][][] field = lattice.getField();
+
+                for (int k = 0; k < height; k++) {
+                    for (int i = 0; i < length; i++) {
+                        for (int j = 0; j < width; j++) {
+                            double dx = i - centerX;
+                            double dy = j - centerY;
+                            double distance = Math.sqrt(dx * dx + dy * dy);
+
+                            if (distance <= coreRadius) {
+                                field[k][i][j] = coreValue;
+                            } else {
+                                double transition =
+                                        Math.min(1.0, (distance - coreRadius) / coreRadius);
+
+                                field[k][i][j] =
+                                        coreValue * (1.0 - transition) + initialValue * transition;
+                            }
+                        }
+                    }
+                }
+            }
+
             lattices.put(key, lattice);
         }
     }

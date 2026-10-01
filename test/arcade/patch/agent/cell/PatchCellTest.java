@@ -716,6 +716,56 @@ public class PatchCellTest {
     }
 
     @Test
+    public void selectBestLocation_withHighEcmDensity_penalizesHighEcmLocation() {
+        doReturn(0.0).when(parametersMock).getDouble(any(String.class));
+        doReturn(0).when(parametersMock).getInt(any(String.class));
+        doReturn(0.0).when(parametersMock).getDouble("AFFINITY");
+        doReturn(1.0).when(parametersMock).getDouble("ACCURACY");
+        doReturn(0.5).when(randomMock).nextDouble();
+
+        PatchLattice glucoseLatticeMock = mock(PatchLattice.class);
+        MiniBox boxMock = mock(MiniBox.class);
+        doReturn(boxMock).when(glucoseLatticeMock).getParameters();
+        doReturn(glucoseLatticeMock).when(simMock).getLattice("GLUCOSE");
+        doReturn(100.).when(boxMock).getDouble("generator/CONCENTRATION");
+
+        PatchLattice ecmLatticeMock = mock(PatchLattice.class);
+        doReturn(ecmLatticeMock).when(simMock).getLattice("ECM_DENSITY");
+
+        PatchCell cell = spy(new PatchCellMock(baseContainer, locationMock, parametersMock));
+        PatchLocation highGlucoseHighEcm = mock(PatchLocation.class);
+        PatchLocation lowerGlucoseLowEcm = mock(PatchLocation.class);
+
+        doReturn(1).when(locationMock).getPlanarIndex();
+        doReturn(1).when(highGlucoseHighEcm).getPlanarIndex();
+        doReturn(1).when(lowerGlucoseLowEcm).getPlanarIndex();
+
+        doReturn(50.).when(glucoseLatticeMock).getAverageValue(locationMock);
+        doReturn(90.).when(glucoseLatticeMock).getAverageValue(highGlucoseHighEcm);
+        doReturn(60.).when(glucoseLatticeMock).getAverageValue(lowerGlucoseLowEcm);
+
+        doReturn(0.0).when(ecmLatticeMock).getAverageValue(locationMock);
+        doReturn(0.9).when(ecmLatticeMock).getAverageValue(highGlucoseHighEcm);
+        doReturn(0.0).when(ecmLatticeMock).getAverageValue(lowerGlucoseLowEcm);
+
+        doReturn(5.0).when(locationMock).getPlanarDistance();
+        doReturn(5.0).when(highGlucoseHighEcm).getPlanarDistance();
+        doReturn(5.0).when(lowerGlucoseLowEcm).getPlanarDistance();
+
+        Bag locations = new Bag();
+        locations.add(highGlucoseHighEcm);
+        locations.add(lowerGlucoseLowEcm);
+        locations.add(locationMock);
+        doReturn(locations).when(cell).findFreeLocations(simMock);
+
+        PatchLocation bestLocation = cell.selectBestLocation(simMock, randomMock);
+
+        // Despite higher glucose, the ECM-dense location should lose out to
+        // the lower-glucose, low-ECM location once the penalty is applied.
+        assertEquals(bestLocation, lowerGlucoseLowEcm);
+    }
+
+    @Test
     public void selectBestLocation_calledWithMaxAffinity_returnsCloserLocation() {
         doReturn(0.0).when(parametersMock).getDouble(any(String.class));
         doReturn(0).when(parametersMock).getInt(any(String.class));

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import sim.engine.Schedule;
 import sim.engine.Steppable;
 import ec.util.MersenneTwisterFast;
+import arcade.core.env.lattice.Lattice;
 import arcade.core.sim.Simulation;
 import arcade.core.util.MiniBox;
 import arcade.core.util.Parameters;
@@ -114,6 +115,23 @@ public class PatchCellCARTCD8Test {
         when(random.nextDouble()).thenReturn(0.49);
         sim.random = random;
         cell.setState(State.UNDEFINED);
+    }
+
+    @Test
+    public void step_whenArmoredAndEcmDensityDeclared_decreasesEcmDensity()
+            throws NoSuchFieldException, IllegalAccessException {
+        Field armoredField = PatchCellCARTCD8.class.getDeclaredField("armored");
+        armoredField.setAccessible(true);
+        armoredField.set(cell, true);
+
+        Lattice ecmLatticeMock = mock(Lattice.class);
+        doReturn(ecmLatticeMock).when(sim).getLattice("ECM_DENSITY");
+
+        cell.step(sim);
+
+        // ECM_DEGRADE_RATE is 0.002 in PatchCellCARTCD8; armored cells should
+        // decrement local ECM density by exactly that amount.
+        verify(ecmLatticeMock, times(1)).incrementValue(location, -0.002);
     }
 
     @Test
